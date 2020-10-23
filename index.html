@@ -59,7 +59,7 @@
 									<td>
 
 										<p><span id="circulationMarket">0</span></p>
-										<p>教育市场规模</p>
+										<p>教育市场规模(亿元)</p>
 									</td>
 								</tr>
 								<!-- <tr>
@@ -101,19 +101,25 @@
 					</div>
 				</div>
 				<div class="flex-cell flex-cell-r" style="padding-bottom:0;">
-					<div class="chart-wrapper">
-						<h3 class="chart-title">信息采集分析图</h3>
-						<div class="chart-div" id="csrcChart">
-							<div class="chart-loader">
-								<div class="loader"></div>
+					<div id="sector">
+						<p class="title" v-cloak><span v-for="(item,index) in tabList"
+								@click="handleTabChange(index)">{{item}}</span></p>
+						<div class=" chart-wrapper">
+							<h3 class="chart-title" v-cloak>{{tabList[activeIndex]}}分析图</h3>
+							<div class="chart-div" id="csrcChart">
+								<div class="chart-loader">
+									<div class="loader"></div>
+								</div>
 							</div>
 						</div>
 					</div>
+
 				</div>
 			</div>
 		</div>
 	</div>
 
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.min.js"></script>
 	<script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
 	<script type="text/javascript" src="js/countUp.min.js"></script>
 	<script type="text/javascript" src="js/echarts.min.js"></script>
@@ -319,7 +325,7 @@
 				console.log("Ajax Fail: ", jqXHR.status, jqXHR.statusText);
 			});
 
-			//获取月度股票情况数据
+			//获取月度文章情况数据
 			const trendChart = echarts.init(document.getElementById("trendChart"), "shine");
 			const trendChartOpt = {
 				tooltip: {
@@ -447,65 +453,102 @@
 				console.log("Ajax Fail: ", jqXHR.status, jqXHR.statusText);
 			});
 
-			//获取信息采集平台数据
-			const csrcChart = echarts.init(document.getElementById("csrcChart"), "shine");
-			const csrcChartOpt = {
-				tooltip: {
-					trigger: "item",
-					formatter: "{b0}<br />文章数：{c0}<br />占比：{d0}%"
+			var data = {
+				tabList: ['采集平台', '人群', '性别', '信息属性'],
+				activeIndex: 0,
+				csrcChart: null,
+			}
+			var vm = new Vue({
+				el: '#sector',
+				data: function () {
+					return data;
 				},
-				legend: {
-					type: "scroll",
-					orient: "vertical",
-					padding: 0,
-					top: 15,
-					right: 0,
-					itemGap: 5,
-					itemWidth: 10,
-					itemHeight: 10,
-					textStyle: {
-						fontSize: 10,
-						color: "#b0c2f9"
+				mounted() {
+					//获取信息采集平台数据
+					this.csrcChart = echarts.init(document.getElementById("csrcChart"), "shine");
+					const csrcChartOpt = {
+						tooltip: {
+							trigger: "item",
+							formatter: "{b0}<br />文章数：{c0}<br />占比：{d0}%"
+						},
+						legend: {
+							type: "scroll",
+							orient: "vertical",
+							padding: 0,
+							top: 15,
+							right: 0,
+							itemGap: 5,
+							itemWidth: 10,
+							itemHeight: 10,
+							textStyle: {
+								fontSize: 10,
+								color: "#b0c2f9"
+							}
+						},
+						series: [{
+							name: "采集平台比例",
+							type: "pie",
+							center: ["47%", "55%"],
+							radius: ["30%", "85%"]
+						}]
+					};
+					this.csrcChart.setOption(csrcChartOpt);
+					this.fetchData();
+
+				},
+				methods: {
+					handleTabChange(index) {
+						this.activeIndex = index;
+						console.log(`: -------------------------------`);
+						console.log(`handleTabChange -> index`, index);
+						console.log(`: -------------------------------`);
+					},
+					fetchData() {
+						$.ajax({
+							url: "data/csrc-industry.json",
+							dataType: "json"
+						}).done(() => {
+							$("#csrcChart").addClass("chart-done");
+						}).done((data) => {
+							//console.log('Data: ', data);
+							const chartData = [];
+							for (let i in data) {
+								chartData.push({
+									name: data[i].alias,
+									value: data[i].stock
+								});
+							}
+							this.csrcChart.setOption({
+								series: [{
+									name: "",
+									data: chartData
+								}]
+							});
+						}).fail(function (jqXHR) {
+							console.log("Ajax Fail: ", jqXHR.status, jqXHR.statusText);
+						});
+
+						$.ajax({
+							url: "http://192.168.90.177:8080/v1/opinion/personType",
+							dataType: "json"
+						}).done(function () {
+							$("#csrcChart").addClass("chart-done");
+						}).done((data) => {
+							console.log(`fetchData -> data`, data);
+							console.log(`: -----------------------`);
+
+						})
 					}
+
+
 				},
-				series: [{
-					name: "采集平台比例",
-					type: "pie",
-					center: ["47%", "55%"],
-					radius: ["30%", "85%"]
-				}]
-			};
-			csrcChart.setOption(csrcChartOpt);
-			$.ajax({
-				url: "data/csrc-industry.json",
-				dataType: "json"
-			}).done(function () {
-				$("#csrcChart").addClass("chart-done");
-			}).done(function (data) {
-				//console.log('Data: ', data);
-				const chartData = [];
-				for (let i in data) {
-					chartData.push({
-						name: data[i].alias,
-						value: data[i].stock
-					});
-				}
-				csrcChart.setOption({
-					series: [{
-						name: "CSRC行业分类",
-						data: chartData
-					}]
-				});
-			}).fail(function (jqXHR) {
-				console.log("Ajax Fail: ", jqXHR.status, jqXHR.statusText);
-			});
+			})
 
 			//浏览器窗口大小变化时，重置报表大小
 			$(window).resize(function () {
 				wordChart.resize();
 				mapChart.resize();
 				trendChart.resize();
-				csrcChart.resize();
 			});
 		});
 
