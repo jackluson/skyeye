@@ -1,4 +1,4 @@
-import { rollNum } from "/utils/index.js";
+import { rollNum } from "../utils/index.js";
 import {
   dataOpt,
   wordChartConfig,
