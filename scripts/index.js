@@ -5,7 +5,7 @@ import {
   mapChartConfig,
   trendChartConfig,
   sectorChartConfig,
-} from "/config/index.js";
+} from "../config/index.js";
 $(function () {
   //获取当天日期
   (function () {
