@@ -59,7 +59,7 @@
 									<td>
 
 										<p><span id="circulationMarket">0</span></p>
-										<p>教育市场规模(亿元)</p>
+										<p>教育市场规模</p>
 									</td>
 								</tr>
 								<tr>
@@ -101,27 +101,21 @@
 					</div>
 				</div>
 				<div class="flex-cell flex-cell-r" style="padding-bottom:0;">
-					<div id="sector">
-						<p class="title" v-cloak><span v-for="(item,index) in tabList"
-								@click="handleTabChange(index)">{{item}}</span></p>
-						<div class=" chart-wrapper">
-							<h3 class="chart-title" v-cloak>{{tabList[activeIndex]}}分析图</h3>
-							<div class="chart-div" id="csrcChart">
-								<div class="chart-loader">
-									<div class="loader"></div>
-								</div>
+					<div class="chart-wrapper">
+						<h3 class="chart-title">信息采集分析图</h3>
+						<div class="chart-div" id="csrcChart">
+							<div class="chart-loader">
+								<div class="loader"></div>
 							</div>
 						</div>
 					</div>
-
 				</div>
 			</div>
 		</div>
 	</div>
 
-	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.min.js"></script>
 	<script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
-	<script type="text/javascript" src="js/vue.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.min.js"></script>
 	<script type="text/javascript" src="js/countUp.min.js"></script>
 	<script type="text/javascript" src="js/echarts.min.js"></script>
 	<script type="text/javascript" src="js/echarts-wordcloud.min.js"></script>
