@@ -54,7 +54,7 @@ body {
   height: 28px;
   background: url("../img/footer.png") 0 0 / 100% 100% no-repeat;
 }
-#container {
+#app {
   position: absolute;
   top: 72px;
   bottom: 22px;
@@ -272,6 +272,7 @@ body {
     transform: rotate(360deg);
   }
 }
+<<<<<<< HEAD
 
 #sector {
   position: relative;
@@ -291,3 +292,4 @@ body {
   margin: 0 2px;
   border-radius: 2px;
 }
+=======>>>>>>>@{-1}
